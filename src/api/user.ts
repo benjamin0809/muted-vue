@@ -1,7 +1,17 @@
 import request from "@/util/request";
 
-export const getUsers = () => {
-  return request.get(`/api/getUsers`);
+interface IUser {
+  list: any[],
+  total: number
+}
+interface IUserParam {
+  page: number
+  pageSize: number
+}
+export const getUsers = (query: IUserParam = { page: 1, pageSize: 20}) => {
+  return request.get<IUser>(`/api/getUsers`, {
+    params: query
+  });
 };
 
 

@@ -15,7 +15,7 @@ import router from '@/routers'
 
 // import ElementPlus from 'element-plus'
 // import 'element-plus/dist/index.css'
-
+import 'vue-global-api'
 const app = createApp(App)
 // app.use(ElementPlus)
 app.use(createPinia())

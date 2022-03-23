@@ -15,7 +15,10 @@ import {
 } from "@element-plus/icons-vue";
 import { useSettingStore } from "@/stores";
 import router, { routes } from "@/routers";
-const { isCollapse, routes: menus } = useSettingStore();
+import { storeToRefs } from "pinia";
+const setting = useSettingStore(); 
+const { isCollapse, routes: menus } = storeToRefs(setting);
+
 const handleOpen = (key: string, keyPath: string[]) => {
   // console.log(key, keyPath);
 };
@@ -35,7 +38,7 @@ const selectMenu = (index: string) => {
 <template>
   <el-menu
     default-active="2"
-    class="el-menu-vertical-demo"
+    class="el-menu-vertical-demo" 
     :collapse="isCollapse"
     @open="handleOpen"
     @close="handleClose"
@@ -59,8 +62,7 @@ const selectMenu = (index: string) => {
 }
 </style>
 
-<style lang="scss">
-@import "@/assets/color.scss";
+<style lang="scss">  
 .el-aside {
   transition: width 0.15s linear;
   background-color: transparent;

@@ -30,7 +30,7 @@ instance.interceptors.response.use(
     (response) => { 
       if(response.status === 200) {
         if(response.data.code === 0) {
-          return response.data.data
+          return response.data
         } else {
           throw response.data.message
         } 

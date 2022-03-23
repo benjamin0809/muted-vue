@@ -58,8 +58,9 @@ const asideWidth = computed(
 .main {
   margin: 16px;
   background: #fff;
-  min-height: calc(100vh - 112px - 60px);
+  height: calc(100vh - 112px - 60px);
   position: relative;
+  overflow-y: scroll;
   .container {
     background: #fff;
   }

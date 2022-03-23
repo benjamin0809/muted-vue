@@ -12,13 +12,22 @@ import { routes } from './router'
 export default [{
     url: '/api/getUsers',
     method: 'get',
-    response: () => {
-        return generateData(Mock.mock({
-            'list|1-10': [{
-                // 属性 id 是一个自增数，起始值为 1，每次增 1
-                'id|+1': 1
-            }]
-        })) 
+    response: ({ query }) => {
+        console.log(query) 
+        const mockObj = {total: 500}
+        const listKey = `list|${ ~~query.pageSize || 20}`
+        mockObj[listKey] = [{
+            // 属性 id 是一个自增数，起始值为 1，每次增 1
+            'id|+1': 1, 
+            "name": "@name",
+            //商品地址
+            "address": "@county(true)",
+            "avatar": "@Image('100x100','@color','小甜甜')",
+            "role": '',
+            "email": "@email",
+            "date": "@date"
+        }] 
+        return generateData(Mock.mock(mockObj)) 
     }
 }, {
     url: '/api/getRouters',

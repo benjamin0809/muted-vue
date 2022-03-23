@@ -12,7 +12,7 @@ import { arrayToTree } from "@/util";
 import { useSettingStore } from "@/stores";
 // This starter template is using Vue 3 <script setup> SFCs
 const setting = useSettingStore()
-getRouters().then(res => setting.routes = arrayToTree(res))
+getRouters().then(res => setting.routes = arrayToTree(res.data))
 
 
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
