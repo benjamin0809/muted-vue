@@ -32,19 +32,19 @@ export const routes = [
   {
     pid: 2,
     id: 20,
-    name: "user",
-    title: "用户管理",
+    name: "equipment",
+    title: "设备管理",
   },
   {
     pid: 2,
     id: 21,
-    name: "table",
-    title: "表格管理",
+    name: "equipmentIn",
+    title: "设备进场",
   },
   {
     pid: 2,
     id: 22,
-    name: "role",
-    title: "角色管理",
+    name: "equipmentOut",
+    title: "设备退场",
   },
 ];

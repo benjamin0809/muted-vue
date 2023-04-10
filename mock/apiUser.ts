@@ -19,7 +19,7 @@ export default [{
         mockObj[listKey] = [{
             // 属性 id 是一个自增数，起始值为 1，每次增 1
             'id|+1': 1, 
-            "name": "@name",
+            "name": "@name" + query.name,
             //商品地址
             "address": "@county(true)",
             "avatar": "@Image('100x100','@color','小甜甜')",

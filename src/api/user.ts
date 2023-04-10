@@ -1,7 +1,11 @@
 import request from "@/util/request";
 
-interface IUser {
+export interface IUser {
   list: any[],
+  total: number
+}
+export interface IResult<T> {
+  list: T[],
   total: number
 }
 interface IUserParam {

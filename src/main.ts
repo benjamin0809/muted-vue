@@ -17,6 +17,9 @@ import router from '@/routers'
 // import 'element-plus/dist/index.css'
 import 'vue-global-api'
 const app = createApp(App)
+app.config.globalProperties.benjaminPublic = () => {
+    console.log(`hello, I'm benjaminPublic from globalProperties`)
+}
 // app.use(ElementPlus)
 app.use(createPinia())
 app.use(router)
