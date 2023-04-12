@@ -63,6 +63,8 @@ const asideWidth = computed(
   overflow-y: scroll;
   .container {
     background: #fff;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

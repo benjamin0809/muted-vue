@@ -10,6 +10,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/routers' 
+import SizeOb from '@/drectives/size-ob'
 // import '@/assets/color.scss'
 
 
@@ -23,5 +24,5 @@ app.config.globalProperties.benjaminPublic = () => {
 // app.use(ElementPlus)
 app.use(createPinia())
 app.use(router)
-
+app.directive('size-ob', SizeOb)
 app.mount('#app')
