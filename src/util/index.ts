@@ -21,3 +21,9 @@ export const arrayToTree = (arr: any) => {
 
   return result
 };
+
+export function delay(wait: number) {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(resolve, wait)
+  })
+}

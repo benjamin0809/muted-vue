@@ -4,6 +4,7 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BeforeSuspense: typeof import('./src/components/case/BeforeSuspense.vue')['default']
     BreadCrumb: typeof import('./src/components/layout/BreadCrumb.vue')['default']
     ContextMenu: typeof import('./src/components/layout/ContextMenu.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -11,9 +12,13 @@ declare module 'vue' {
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
     ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
@@ -28,12 +33,17 @@ declare module 'vue' {
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
+    ElRadio: typeof import('element-plus/es')['ElRadio']
+    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSelectV2: typeof import('element-plus/es')['ElSelectV2']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     Footer: typeof import('./src/components/layout/Footer.vue')['default']
     Form: typeof import('./src/components/Form.vue')['default']
     Header: typeof import('./src/components/layout/Header.vue')['default']
@@ -43,6 +53,7 @@ declare module 'vue' {
     Tags: typeof import('./src/components/layout/Tags.vue')['default']
     Test: typeof import('./src/components/Test.vue')['default']
     UserInfo: typeof import('./src/components/UserInfo.vue')['default']
+    WithSuspense: typeof import('./src/components/case/WithSuspense.vue')['default']
   }
 }
 

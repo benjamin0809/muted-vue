@@ -7,6 +7,7 @@
  * @FilePath: \vite-ts-pippe\src\util\request.ts
  */
 import { baseUrl } from "@/config";
+import { ElMessage, ElMessageBox } from 'element-plus'
 import Axios from "axios";
 const instance = Axios.create({
   baseURL: baseUrl,
@@ -32,7 +33,10 @@ instance.interceptors.response.use(
         if(response.data.code === 0) {
           return response.data
         } else {
-          throw response.data.message
+          ElMessage({
+            type: 'error',
+            message: response.data.message || '内部错误',
+          })
         } 
       } else if(response.status === 401){
         console.error(response.statusText)

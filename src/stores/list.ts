@@ -19,7 +19,7 @@ const useList = <T>(api: any, params?: any) => {
             size: size.value
         }
         Object.assign(params, query)
-        BenGet<IResult<T>>(api, params).then(res => {
+        return BenGet<IResult<T>>(api, params).then(res => {
             list.value = res.data.list
             total.value = res.data.total
         })

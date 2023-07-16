@@ -15,7 +15,7 @@ import SizeOb from '@/drectives/size-ob'
 
 
 // import ElementPlus from 'element-plus'
-// import 'element-plus/dist/index.css'
+import 'element-plus/dist/index.css'
 import 'vue-global-api'
 const app = createApp(App)
 app.config.globalProperties.benjaminPublic = () => {
