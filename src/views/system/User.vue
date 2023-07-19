@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, provide } from 'vue'
 import { IUser } from "@/api/user";
 import UserInfo from './UserInfo.vue'
 import useList from '../../stores/list'
@@ -67,6 +67,7 @@ const { page,
   handleCurrentChange,
   getData } = useList<IUser>(API_URL.getUsers)
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { PROVIDE_GETUSER, PROVIDE_getUser, PROVIDE_key } from'@/provides'
 const visible = ref(false)
 const formId = ref(0)
 const status = ref('create')
@@ -93,6 +94,9 @@ const onReset = () => {
 const refresh = () => {
   getData(formInline)
 }
+provide(PROVIDE_getUser, refresh)
+provide(PROVIDE_GETUSER, refresh)
+provide(PROVIDE_key, 'user provide varible')
 const onCreate = () => {
   status.value = 'create'
   visible.value = true

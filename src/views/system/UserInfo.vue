@@ -36,8 +36,16 @@
 <script lang="ts" setup>
 import { API_URL, BenPost, BenGet } from '@/api';
 import { reactive, ref } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { ElForm } from 'element-plus'
+import FormRules from 'element-plus'
+import { PROVIDE_GETUSER, PROVIDE_getUser, PROVIDE_key } from '@/provides';
 
+type FormInstance = InstanceType<typeof ElForm>
+
+function useTypeRef(T) {
+    return ref<InstanceType<typeof T>>()
+
+}
 interface RuleForm {
     name: string
     address: string
@@ -55,7 +63,7 @@ const props = defineProps({
     status: String
 })
 const disabled = computed(() => props.status === 'detail')
-const ruleFormRef = ref<FormInstance>()
+const ruleFormRef = useTypeRef(ElForm)
 const ruleForm = reactive<RuleForm>({
     name: 'Hello',
     address: '',
@@ -118,6 +126,8 @@ const rules = reactive<FormRules<RuleForm>>({
         { required: true, message: 'Please input activity form', trigger: 'blur' },
     ],
 })
+const refresh = inject(PROVIDE_GETUSER)
+const parent_key = inject(PROVIDE_key)
 const emits = defineEmits(['update:dialogVisible', 'refresh'])
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl || !formEl.resetFields) return
@@ -160,7 +170,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         if (valid) {
             submit().then(() => {
                 loading.value = false
-                emits('refresh')
+                // emits('refresh')
+                console.log(parent_key)
+                refresh!('name')
                 close()
             })
             console.log('submit!')
@@ -170,11 +182,5 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
 }
 
-
-
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-    value: `${idx + 1}`,
-    label: `${idx + 1}`,
-}))
 </script>
   
