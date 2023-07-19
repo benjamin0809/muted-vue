@@ -28,7 +28,7 @@
       <!-- <el-col> -->
       <el-button type="primary" @click="onSubmit">Query</el-button>
       <el-button type="primary" @click="onReset">Reset</el-button>
-      <el-button type="primary" @click="onCreate">Create</el-button>
+      <el-button type="primary" @click="onHandleOperate('create')">Create</el-button>
       <!-- </el-col> -->
     </el-row>
   </el-form>
@@ -40,8 +40,8 @@
     <el-table-column prop="email" label="Email" />
     <el-table-column fixed="right" label="Operations" width="120">
       <template #default="{ row }">
-        <el-button type="text" size="small" @click="handleClick(row)">详情</el-button>
-        <el-button type="text" size="small" @click="handleModify(row)">修改</el-button>
+        <el-button type="text" size="small" @click="onHandleOperate('detail', row)">详情</el-button>
+        <el-button type="text" size="small" @click="onHandleOperate('modify', row)">修改</el-button>
         <el-button type="text" size="small" @click="handleDelete(row)">删除</el-button>
       </template>
     </el-table-column>
@@ -53,6 +53,7 @@
 </template>
 
 <script lang="ts" setup>
+
 import { reactive, provide } from 'vue'
 import { IUser } from "@/api/user";
 import UserInfo from './UserInfo.vue'
@@ -67,13 +68,11 @@ const { page,
   handleCurrentChange,
   getData } = useList<IUser>(API_URL.getUsers)
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { PROVIDE_GETUSER, PROVIDE_getUser, PROVIDE_key } from'@/provides'
-const visible = ref(false)
-const formId = ref(0)
-const status = ref('create')
-onMounted(() => {
-  getData();
-});
+import { PROVIDE_getUser, PROVIDE_key } from '@/provides'
+import useFormTableRef from '@/hook/useFormTableRef';
+import { FORM_STATUS } from '@/constants/common';
+const { visible, formId, status } = useFormTableRef()
+
 const init = () => ({
   name: '',
   email: '',
@@ -95,24 +94,29 @@ const refresh = () => {
   getData(formInline)
 }
 provide(PROVIDE_getUser, refresh)
-provide(PROVIDE_GETUSER, refresh)
-provide(PROVIDE_key, 'user provide varible')
-const onCreate = () => {
-  status.value = 'create'
-  visible.value = true
-}
-const handleClick = (row) => {
-  status.value = 'detail'
-  visible.value = true
-  formId.value = row.id
-};
-const handleModify = (row) => {
-  status.value = 'modify'
-  visible.value = true
-  formId.value = row.id
-};
 
-const handleDelete = async (row) => {
+onMounted(() => {
+  getData();
+});
+
+/**
+ * 操作（新增、修改、详情）
+ * @param row 
+ * @param _status 状态
+ */
+const onHandleOperate = (_status, row?: IFormBase) => {
+  status.value = _status
+  visible.value = true
+  if ([FORM_STATUS.DETAIL, FORM_STATUS.MODIFY].includes(_status)) {
+    formId.value = row!.id
+  }
+}
+
+/**
+ * 删除
+ * @param row 行数据
+ */
+const handleDelete = async (row: IFormBase) => {
   await ElMessageBox.confirm(
     'proxy will permanently delete the record. Continue?',
     'Warning',
@@ -122,14 +126,11 @@ const handleDelete = async (row) => {
       type: 'warning',
     }
   )
-  BenPost(API_URL.deleteUser, { id: row.id })
-  .then (res => {
-    getData(formInline)
-    ElMessage({
-      type: 'success',
-      message: 'Delete completed',
-    })
+  await BenPost(API_URL.deleteUser, { id: row.id })
+  getData(formInline)
+  ElMessage({
+    type: 'success',
+    message: 'Delete completed',
   })
-
 }
 </script>

@@ -38,7 +38,8 @@ import { API_URL, BenPost, BenGet } from '@/api';
 import { reactive, ref } from 'vue'
 import { ElForm } from 'element-plus'
 import FormRules from 'element-plus'
-import { PROVIDE_GETUSER, PROVIDE_getUser, PROVIDE_key } from '@/provides';
+import { PROVIDE_getUser, PROVIDE_key } from '@/provides';
+import { FORM_STATUS } from '@/constants/common';
 
 type FormInstance = InstanceType<typeof ElForm>
 
@@ -62,7 +63,7 @@ const props = defineProps({
     id: Number,
     status: String
 })
-const disabled = computed(() => props.status === 'detail')
+const disabled = computed(() => props.status === FORM_STATUS.DETAIL)
 const ruleFormRef = useTypeRef(ElForm)
 const ruleForm = reactive<RuleForm>({
     name: 'Hello',
@@ -126,7 +127,7 @@ const rules = reactive<FormRules<RuleForm>>({
         { required: true, message: 'Please input activity form', trigger: 'blur' },
     ],
 })
-const refresh = inject(PROVIDE_GETUSER)
+const refresh = inject(PROVIDE_getUser)
 const parent_key = inject(PROVIDE_key)
 const emits = defineEmits(['update:dialogVisible', 'refresh'])
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -136,7 +137,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 watchEffect(() => {
     console.log('watchEffect,', props.id, props.status)
-    if (props.id && ['detail', 'modify'].includes(props.status!)) {
+    if (props.id && [FORM_STATUS.DETAIL, FORM_STATUS.MODIFY].includes(props.status as FORM_STATUS)) {
         getData(props.id)
     } else {
         Object.assign(ruleForm, {
@@ -172,7 +173,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 loading.value = false
                 // emits('refresh')
                 console.log(parent_key)
-                refresh!('name')
+                refresh!()
                 close()
             })
             console.log('submit!')
