@@ -43,8 +43,8 @@ import { FORM_STATUS } from '@/constants/common';
 
 type FormInstance = InstanceType<typeof ElForm>
 
-function useTypeRef(T) {
-    return ref<InstanceType<typeof T>>()
+function useTypeRef(t: { new (...args): any }, ...args) {
+    return ref<InstanceType<typeof t>>()
 
 }
 interface RuleForm {

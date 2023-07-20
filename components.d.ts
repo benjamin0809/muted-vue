@@ -5,6 +5,7 @@
 declare module 'vue' {
   export interface GlobalComponents {
     BeforeSuspense: typeof import('./src/components/case/BeforeSuspense.vue')['default']
+    BenTable: typeof import('./src/components/base/BenTable.vue')['default']
     BreadCrumb: typeof import('./src/components/layout/BreadCrumb.vue')['default']
     ContextMenu: typeof import('./src/components/layout/ContextMenu.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']

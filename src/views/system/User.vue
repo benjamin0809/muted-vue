@@ -1,12 +1,12 @@
 <template>
-  <el-form :inline="true" :model="formInline" class="demo-form-inline">
+  <el-form :inline="true" :model="tableModel" class="demo-form-inline">
     <el-row :gutter="20">
       <el-col :span="6"><el-form-item label="Name">
-          <el-input v-model="formInline.name" placeholder="Name by" />
+          <el-input v-model="tableModel.name" placeholder="Name by" />
         </el-form-item></el-col>
       <el-col :span="6">
         <el-form-item label="Address">
-          <el-select v-model="formInline.address" placeholder="Activity zone">
+          <el-select clearable v-model="tableModel.address" placeholder="Activity zone">
             <el-option label="Zone one" value="shanghai" />
             <el-option label="Zone two" value="beijing" />
           </el-select>
@@ -14,19 +14,18 @@
       </el-col>
       <el-col :span="6">
         <el-form-item label="Email">
-          <el-input v-model="formInline.email" placeholder="Email by" />
+          <el-input v-model="tableModel.email" placeholder="Email by" />
         </el-form-item>
       </el-col>
       <el-col :span="6">
         <el-form-item label="Date">
-          <el-date-picker v-model="formInline.date" type="date" placeholder="Pick a day" />
+          <el-date-picker v-model="tableModel.date" type="date" placeholder="Pick a day" />
         </el-form-item>
-
       </el-col>
     </el-row>
     <el-row :gutter="20" justify="end">
       <!-- <el-col> -->
-      <el-button type="primary" @click="onSubmit">Query</el-button>
+      <el-button type="primary" @click="refresh">Query</el-button>
       <el-button type="primary" @click="onReset">Reset</el-button>
       <el-button type="primary" @click="onHandleOperate('create')">Create</el-button>
       <!-- </el-col> -->
@@ -54,50 +53,37 @@
 
 <script lang="ts" setup>
 
-import { reactive, provide } from 'vue'
-import { IUser } from "@/api/user";
+import { provide } from 'vue'
 import UserInfo from './UserInfo.vue'
 import useList from '../../stores/list'
 import { API_URL, BenPost } from '@/api';
-const { page,
-  size,
-  list,
-  total,
-  reset,
-  handleSizeChange,
-  handleCurrentChange,
-  getData } = useList<IUser>(API_URL.getUsers)
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { PROVIDE_getUser, PROVIDE_key } from '@/provides'
-import useFormTableRef from '@/hook/useFormTableRef';
-import { FORM_STATUS } from '@/constants/common';
-const { visible, formId, status } = useFormTableRef()
-
-const init = () => ({
+const initModel = {
   name: '',
   email: '',
   date: '',
   address: '',
-})
-const formInline = reactive(init())
+}
+const { page,
+  size,
+  list,
+  total,
+  tableModel,
+  reset: onReset,
+  handleSizeChange,
+  handleCurrentChange,
+  refresh,
+  getData } = useList<IUser>(API_URL.getUsers, {
+    query: initModel
+  })
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { PROVIDE_getUser } from '@/provides'
+import useFormTableRef from '@/hook/useFormTableRef';
+import { FORM_STATUS } from '@/constants/common';
+import { IUser } from '@shared/types';
+const { visible, formId, status } = useFormTableRef()
 
-const onSubmit = (...e) => {
-  getData(formInline)
-  console.log('submit!', formInline)
-}
-const onReset = () => {
-  console.log('init:', init())
-  Object.assign(formInline, init())
-  reset()
-}
-const refresh = () => {
-  getData(formInline)
-}
+// provide to Childs
 provide(PROVIDE_getUser, refresh)
-
-onMounted(() => {
-  getData();
-});
 
 /**
  * 操作（新增、修改、详情）
@@ -127,10 +113,14 @@ const handleDelete = async (row: IFormBase) => {
     }
   )
   await BenPost(API_URL.deleteUser, { id: row.id })
-  getData(formInline)
+  refresh()
   ElMessage({
     type: 'success',
     message: 'Delete completed',
   })
 }
+
+onMounted(() => {
+  getData();
+});
 </script>

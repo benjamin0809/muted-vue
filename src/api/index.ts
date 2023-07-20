@@ -5,20 +5,35 @@ interface Resp {
   code: number
   message: string
 }
+export interface IPageParam {
+  page: number
+  pageSize: number
+}
+
+export interface IResult<T = any> {
+  list: T[],
+  total: number
+}
 export const BenGet = <T>(api: API_URL, query: Param) => {
   return request.get<T>(api, {
     params: query
   });
 };
 
-export const BenPost = <T extends Resp>(api: API_URL, body: Param) => {
+export const BenPost = <T extends Resp>(api: APIURL, body: Param) => {
   return request.post<T>(api, body);
 };
-
+type APIURL = API_URL | API_ROLE_URL
 export enum API_URL {
     getUsers = '/api/getUsers',
     deleteUser = '/api/deleteUser',
     getUser = '/api/getUser',
     saveUser = '/api/saveUser',
     getRouters = '/api/getRouters'
+}
+export enum API_ROLE_URL {
+  getRoles = '/api/getRoles',
+  deleteRole = '/api/deleteRole',
+  getRole = '/api/getRole',
+  saveRole = '/api/saveRole'
 }

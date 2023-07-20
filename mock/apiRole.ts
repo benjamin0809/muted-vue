@@ -4,68 +4,57 @@
  * @LastEditTime: 2022-03-16 23:09:51
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \vite-ts-pippe\mock\apiUser.ts
+ * @FilePath: \vite-ts-pippe\mock\apiRole.ts
  */
 import Mock from "mockjs";
 import { generateData, tryOnExecute } from "./util";
-import userService from "./service/userService";
+import roleService from "./service/roleService";
 import { routes } from "./router";
-const user = new userService();
+const role = new roleService();
 export default [
   {
-    url: "/api/getUsers",
+    url: "/api/getRoles",
     method: "get",
     timeout: 300,
     response: ({ query }) => {
       console.log(query);
-      const datalist = user.getList(query);
+      const datalist = role.getList(query);
       return generateData(datalist);
     },
   },
   {
-    url: "/api/deleteUser",
+    url: "/api/deleteRole",
     method: "post",
     timeout: 300,
     response: ({ query, body }) => {
       console.log(body.id);
       return tryOnExecute(() => {
-        return user.delete(body.id);
+        return role.delete(body.id);
       });
     },
   },
   {
-    url: "/api/saveUser",
+    url: "/api/saveRole",
     method: "post",
     timeout: 300,
     response: ({ body }) => {
       console.log(body);
       return tryOnExecute(() => {
         if (body.id) {
-          return user.update(body);
+          return role.update(body);
         } else {
-          return user.add(body);
+          return role.add(body);
         }
       });
     },
   },
   {
-    url: "/api/getUser",
+    url: "/api/getRole",
     method: "get",
     timeout: 200,
     response: ({ query }) => {
       console.log(query);
-      return tryOnExecute(() => user.get(query.id));
+      return tryOnExecute(() => role.get(query.id));
     },
-  },
-  {
-    url: "/api/getRouters",
-    method: "get",
-    response: () => {
-      return {
-        code: 0,
-        message: "ok",
-        data: routes,
-      };
-    },
-  },
+  }
 ];
