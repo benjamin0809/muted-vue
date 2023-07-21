@@ -14,7 +14,9 @@ export interface IResult<T = any> {
   list: T[],
   total: number
 }
-export const BenGet = <T>(api: API_URL, query: Param) => {
+
+type APIURL = API_URL | API_ROLE_URL
+export const BenGet = <T>(api: APIURL, query: Param) => {
   return request.get<T>(api, {
     params: query
   });
@@ -23,7 +25,6 @@ export const BenGet = <T>(api: API_URL, query: Param) => {
 export const BenPost = <T extends Resp>(api: APIURL, body: Param) => {
   return request.post<T>(api, body);
 };
-type APIURL = API_URL | API_ROLE_URL
 export enum API_URL {
     getUsers = '/api/getUsers',
     deleteUser = '/api/deleteUser',

@@ -45,6 +45,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Footer: typeof import('./src/components/layout/Footer.vue')['default']
     Form: typeof import('./src/components/Form.vue')['default']
     Header: typeof import('./src/components/layout/Header.vue')['default']

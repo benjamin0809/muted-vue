@@ -7,7 +7,10 @@ interface IData<T> {
     total: number;
   }
 class BaseService<T extends BaseDto, C> {
-  mockData: IData<T>;
+  mockData: IData<T> = {
+    list: [],
+    total: 0
+  };
   constructor() {}
   delete(id: number) {
     const idx = this.mockData.list.findIndex((item) => item.id === id);

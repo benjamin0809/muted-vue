@@ -3,8 +3,9 @@
     <el-dialog v-model="dialogVisible" title="Tips" width="70%">
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" size="small"
             status-icon>
-            <el-form-item label="Activity name" prop="name">
-                <el-input v-model="ruleForm.name" :disabled="disabled" />
+            <el-form-item label="User name" prop="name">
+                <el-input v-model="ruleForm.name" clearable :disabled="disabled" />
+                <span class="tips">Please input User name，Length should be 3 to 20；eg: Benjamin Chiu</span>
             </el-form-item>
             <el-form-item label="Address" prop="address">
                 <el-input v-model="ruleForm.address" :disabled="disabled" />
@@ -16,7 +17,11 @@
                 <el-input v-model="ruleForm.avatar" :disabled="disabled" />
             </el-form-item>
             <el-form-item label="Role" prop="role">
-                <el-input v-model="ruleForm.role" :disabled="disabled" />
+                <el-select :disabled="disabled" v-model="ruleForm.role" multiple filterable remote reserve-keyword
+                    placeholder="Please enter a keyword" remote-show-suffix :remote-method="remoteMethod"
+                    :loading="loading">
+                    <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
             </el-form-item>
             <el-form-item label="Date" prop="date">
                 <el-input v-model="ruleForm.date" :disabled="disabled" />
@@ -25,7 +30,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="close">Cancel</el-button>
-                <el-button type="primary" @click="submitForm(ruleFormRef)" :loading="loading">
+                <el-button type="primary" @click="submitForm()" :loading="loading">
                     Confirm
                 </el-button>
             </span>
@@ -34,19 +39,14 @@
 </template>
   
 <script lang="ts" setup>
-import { API_URL, BenPost, BenGet } from '@/api';
+import { API_URL, BenPost, BenGet, IResult, API_ROLE_URL } from '@/api';
 import { reactive, ref } from 'vue'
 import { ElForm } from 'element-plus'
-import FormRules from 'element-plus'
 import { PROVIDE_getUser, PROVIDE_key } from '@/provides';
 import { FORM_STATUS } from '@/constants/common';
-
-type FormInstance = InstanceType<typeof ElForm>
-
-function useTypeRef(t: { new (...args): any }, ...args) {
-    return ref<InstanceType<typeof t>>()
-
-}
+import { useInstanceRef } from '@/shared'
+import { FormRulesMap } from 'element-plus/es/components/form/src/form.type';
+import { IRole } from '@shared/types';
 interface RuleForm {
     name: string
     address: string
@@ -64,7 +64,8 @@ const props = defineProps({
     status: String
 })
 const disabled = computed(() => props.status === FORM_STATUS.DETAIL)
-const ruleFormRef = useTypeRef(ElForm)
+const ruleFormRef = useInstanceRef(ElForm)
+const options = ref<IRole[]>([])
 const ruleForm = reactive<RuleForm>({
     name: 'Hello',
     address: '',
@@ -73,10 +74,10 @@ const ruleForm = reactive<RuleForm>({
     role: '',
     avatar: ''
 })
-const rules = reactive<FormRules<RuleForm>>({
+const rules = reactive<FormRulesMap>({
     name: [
-        { required: true, message: 'Please input Activity name', trigger: 'blur' },
-        { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+        { required: true, message: 'Please input User name', trigger: 'blur' },
+        { min: 3, max: 20, message: 'Length should be 3 to 20', trigger: 'blur' },
     ],
     region: [
         {
@@ -85,11 +86,12 @@ const rules = reactive<FormRules<RuleForm>>({
             trigger: 'change',
         },
     ],
-    count: [
+    email: [
         {
             required: true,
-            message: 'Please select Activity count',
-            trigger: 'change',
+            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            message: '请输入正确的邮箱',
+            trigger: 'blur',
         },
     ],
     date1: [
@@ -130,16 +132,16 @@ const rules = reactive<FormRules<RuleForm>>({
 const refresh = inject(PROVIDE_getUser)
 const parent_key = inject(PROVIDE_key)
 const emits = defineEmits(['update:dialogVisible', 'refresh'])
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl || !formEl.resetFields) return
-    console.log('resetForm:', formEl)
-    formEl.resetFields()
+const resetForm = () => {
+    if (!ruleFormRef || !ruleFormRef.value?.resetFields) return
+    ruleFormRef.value.resetFields()
 }
 watchEffect(() => {
     console.log('watchEffect,', props.id, props.status)
     if (props.id && [FORM_STATUS.DETAIL, FORM_STATUS.MODIFY].includes(props.status as FORM_STATUS)) {
         getData(props.id)
     } else {
+        // resetForm()
         Object.assign(ruleForm, {
             name: 'Hello',
             address: '',
@@ -150,6 +152,18 @@ watchEffect(() => {
         })
     }
 })
+
+const remoteMethod = (query: string) => {
+    if (query) {
+        loading.value = true
+        BenGet<IResult<IRole>>(API_ROLE_URL.getRoles, { name: query }).then((res) => {
+            loading.value = false
+            options.value = res.data.list;
+        });
+    } else {
+        options.value = []
+    }
+}
 const getData = (id) => {
     BenGet(API_URL.getUser, { id }).then(res => {
         console.log(res)
@@ -165,9 +179,9 @@ const loading = ref(false)
 const submit = () => {
     return BenPost(API_URL.saveUser, ruleForm)
 }
-const submitForm = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
+const submitForm = async () => {
+    if (!ruleFormRef) return
+    await ruleFormRef.value?.validate((valid, fields) => {
         if (valid) {
             submit().then(() => {
                 loading.value = false
@@ -184,4 +198,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 }
 
 </script>
-  
+<style lang="scss" scoped>
+.tips {
+    color: #9e9e9e;
+}
+</style>

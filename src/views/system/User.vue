@@ -1,6 +1,6 @@
 <template>
   <el-form :inline="true" :model="tableModel" class="demo-form-inline">
-    <el-row :gutter="20">
+    <el-row>
       <el-col :span="6"><el-form-item label="Name">
           <el-input v-model="tableModel.name" placeholder="Name by" />
         </el-form-item></el-col>
@@ -19,24 +19,48 @@
       </el-col>
       <el-col :span="6">
         <el-form-item label="Date">
-          <el-date-picker v-model="tableModel.date" type="date" placeholder="Pick a day" />
+          <el-date-picker class="date-cls" v-model="tableModel.date" type="date" placeholder="Pick a day" />
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row :gutter="20" justify="end">
+    <el-row justify="end">
       <!-- <el-col> -->
-      <el-button type="primary" @click="refresh">Query</el-button>
-      <el-button type="primary" @click="onReset">Reset</el-button>
-      <el-button type="primary" @click="onHandleOperate('create')">Create</el-button>
+      <div style="margin-left: 10px;margin-right: auto;">
+        <el-button type="primary" @click="onHandleOperate('create')">
+          <el-icon>
+            <CirclePlusFilled />
+          </el-icon>
+          Create
+        </el-button>
+      </div>
+
+      <el-button type="primary" @click="refresh">
+        <el-icon>
+          <Search />
+        </el-icon>
+        Query
+      </el-button>
+      <el-button @click="onReset">
+        <el-icon>
+          <Refresh />
+        </el-icon>
+        Reset
+      </el-button>
       <!-- </el-col> -->
     </el-row>
   </el-form>
   <el-divider></el-divider>
   <el-table :data="list" style="width: 100%">
-    <el-table-column prop="date" label="Date" width="180" />
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="address" label="Address" />
+    <el-table-column prop="name" label="Name" width="156" />
     <el-table-column prop="email" label="Email" />
+    <el-table-column prop="address" label="Address">
+      <template #default="{ row }">
+        <el-tooltip :content="row.address" placement="top">
+          <div style="overflow: hidden;width: 100%;text-overflow: ellipsis;white-space: nowrap;">{{ row.address }}</div>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column prop="date" label="Date" width="140" />
     <el-table-column fixed="right" label="Operations" width="120">
       <template #default="{ row }">
         <el-button type="text" size="small" @click="onHandleOperate('detail', row)">详情</el-button>
@@ -57,6 +81,16 @@ import { provide } from 'vue'
 import UserInfo from './UserInfo.vue'
 import useList from '../../stores/list'
 import { API_URL, BenPost } from '@/api';
+import {
+  Check,
+  Delete,
+  Edit,
+  Message,
+  Refresh,
+  CirclePlusFilled,
+  Search,
+  Star,
+} from '@element-plus/icons-vue'
 const initModel = {
   name: '',
   email: '',
@@ -124,3 +158,9 @@ onMounted(() => {
   getData();
 });
 </script>
+<style lang="scss" scoped>
+:deep(.date-cls) {
+  // width: 120px;
+  --el-date-editor-width: 136px;
+}
+</style>
